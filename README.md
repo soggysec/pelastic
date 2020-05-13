@@ -18,6 +18,7 @@ Example on Windows
 [Environment]::SetEnvironmentVariable("PELASTIC", "C:\Users\wutan\pelastic.ini", "User")
 ```
 
+Example Configuration File
 ```bash
 [peloton]
 username = Your_Peloton_Username_Or_Email
