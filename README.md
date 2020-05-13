@@ -26,8 +26,8 @@ password = Your_Peloton_Password
 
 [elastic]
 id = Your_Elastic_Cloud_ID
-username = Your_Elastic_Cloud_Username
-password = Your_Elastic_Cloud_Password
+username = Your_Elastic_Cluster_Username
+password = Your_Elastic_Cluster_Password
 ```
 
 #### Example Usage
