@@ -1,7 +1,7 @@
 import logging
 import os
 
-from pelastic import PelotonWorkout
+from peloton import PelotonWorkout
 from elasticsearch import Elasticsearch
 
 def get_logger():
