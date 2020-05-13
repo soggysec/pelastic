@@ -8,12 +8,12 @@ https://github.com/codingogre/pelastic/archive/master.zip
 Pelastic requires a configuration file, where the path (including file) is either pulled from the environment variable `PELASTIC_CONFIG`,
 or looked for in the hard-coded `~/.config/pelastic.ini`
 
-Example on Apple OS X
+Example on Apple OS X.  Open the Terminal.app and enter the following
 ```bash
 export PELASTIC_CONFIG=$HOME/pelastic.ini
 ```
 
-Example on Windows
+Example on Windows.  Open Powershell and enter the following
 ```bash
 [Environment]::SetEnvironmentVariable("PELASTIC_CONFIG", "C:\Users\wutan\pelastic.ini", "User")
 ```
