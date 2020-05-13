@@ -9,19 +9,19 @@ import decimal
 from datetime import datetime
 from datetime import timezone
 from datetime import date
-from .version import __version__
+from version import __version__
 
 # Set our base URL location
 _BASE_URL = 'https://api.onepeloton.com'
 
 # Being friendly, let Peloton know who we are (eg: not the web ui)
-_USER_AGENT = "peloton-client-library/{}".format(__version__)
+_USER_AGENT = "pelastic-client-library/{}".format(__version__)
 
 def get_logger():
     """ To change log level from calling code, use something like
-        logging.getLogger("peloton").setLevel(logging.DEBUG)
+        logging.getLogger("pelastic").setLevel(logging.DEBUG)
     """
-    logger = logging.getLogger("peloton")
+    logger = logging.getLogger("pelastic")
     if not logger.handlers:
         handler = logging.StreamHandler()
         formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
@@ -37,16 +37,16 @@ try:
 
     import configparser
     parser = configparser.ConfigParser()
-    conf_path = os.environ.get("PELOTON_CONFIG", "~/.config/peloton")
+    conf_path = os.environ.get("PELASTIC_CONFIG", "~/.config/pelastic.ini")
     parser.read(os.path.expanduser(conf_path))
 
     # Mandatory credentials
-    PELOTON_USERNAME = parser.get("peloton", "username")
-    PELOTON_PASSWORD = parser.get("peloton", "password")
+    PELOTON_USERNAME = parser.get("pelastic", "username")
+    PELOTON_PASSWORD = parser.get("pelastic", "password")
 
     # Additional option to show or hide warnings
     try:
-        ignore_warnings = parser.getboolean("peloton", "ignore_warnings")
+        ignore_warnings = parser.getboolean("pelastic", "ignore_warnings")
         SHOW_WARNINGS = False if ignore_warnings else True
 
     except:
@@ -59,18 +59,18 @@ try:
 
     # Whether or not to verify SSL connections (defaults to True)
     try:
-        SSL_VERIFY = parser.getboolean("peloton", "ssl_verify")
+        SSL_VERIFY = parser.getboolean("pelastic", "ssl_verify")
     except:
         SSL_VERIFY = True
 
     # If set, we'll use this cert to verify against. Useful when you're stuck behind SSL MITM
     try:
-        SSL_CERT = parser.get("peloton", "ssl_cert")
+        SSL_CERT = parser.get("pelastic", "ssl_cert")
     except:
         SSL_CERT = None
 
 except Exception as e:
-    get_logger().error("No `username` or `password` found in section `peloton` in ~/.config/peloton\n"
+    get_logger().error("No `username` or `password` found in section `pelastic` in ~/.config/pelastic\n"
                          "Please ensure you specify one prior to utilizing the API\n")
 
 if SHOW_WARNINGS:
@@ -279,7 +279,7 @@ class PelotonAPI:
 
         if cls.peloton_username is None or cls.peloton_password is None:
             raise PelotonClientError("The Peloton Client Library requires a `username` and `password` be set in "
-                                     "`/.config/peloton, under section `peloton`")
+                                     "`/.config/pelastic, under section `pelastic`")
 
         payload = {
             'username_or_email': cls.peloton_username,
