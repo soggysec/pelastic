@@ -1,13 +1,22 @@
 
-
-As I've been poking around in your WebUI, I've essentially been looking at the API calls that are made. I've
-been keeping notes on all of this [here](https://github.com/geudrik/peloton-api/blob/master/API_DOCS.md).
-
 ### Using the Pelastic tool
 
+#### Download
+https://github.com/codingogre/pelastic/archive/master.zip
+
 #### Configuration
-Pelastic requires a configuration file, where the path is either pulled from the environment variable `PELASTIC_CONFIG`,
+Pelastic requires a configuration file, where the path (including file) is either pulled from the environment variable `PELASTIC_CONFIG`,
 or looked for in the hard-coded `~/.config/pelastic.ini`
+
+Example on Apple OS X
+```bash
+export PELASTIC_CONFIG=$HOME/pelastic.ini
+```
+
+Example on Windows
+```bash
+[Environment]::SetEnvironmentVariable("PELASTIC", "C:\Users\wutan\pelastic.ini", "User")
+```
 
 ```bash
 [peloton]
@@ -21,5 +30,13 @@ password = Your_Elastic_Cloud_Password
 ```
 
 #### Example Usage
+Open the Terminal.app on Apple OS X and navigate to the folder where pelastic is downloaded
+
 ```bash
-pelastic.py
+./pelastic.py
+```
+
+Open Powershell on Windows
+```bash
+python pelastic.py
+```
