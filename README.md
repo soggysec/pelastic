@@ -15,7 +15,7 @@ export PELASTIC_CONFIG=$HOME/pelastic.ini
 
 Example on Windows
 ```bash
-[Environment]::SetEnvironmentVariable("PELASTIC", "C:\Users\wutan\pelastic.ini", "User")
+[Environment]::SetEnvironmentVariable("PELASTIC_CONFIG", "C:\Users\wutan\pelastic.ini", "User")
 ```
 
 Example Configuration File
