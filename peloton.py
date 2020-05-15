@@ -41,12 +41,12 @@ try:
     parser.read(os.path.expanduser(conf_path))
 
     # Mandatory credentials
-    PELOTON_USERNAME = parser.get("pelastic", "username")
-    PELOTON_PASSWORD = parser.get("pelastic", "password")
+    PELOTON_USERNAME = parser.get("peloton", "username")
+    PELOTON_PASSWORD = parser.get("peloton", "password")
 
     # Additional option to show or hide warnings
     try:
-        ignore_warnings = parser.getboolean("pelastic", "ignore_warnings")
+        ignore_warnings = parser.getboolean("peloton", "ignore_warnings")
         SHOW_WARNINGS = False if ignore_warnings else True
 
     except:
@@ -59,18 +59,18 @@ try:
 
     # Whether or not to verify SSL connections (defaults to True)
     try:
-        SSL_VERIFY = parser.getboolean("pelastic", "ssl_verify")
+        SSL_VERIFY = parser.getboolean("peloton", "ssl_verify")
     except:
         SSL_VERIFY = True
 
     # If set, we'll use this cert to verify against. Useful when you're stuck behind SSL MITM
     try:
-        SSL_CERT = parser.get("pelastic", "ssl_cert")
+        SSL_CERT = parser.get("peloton", "ssl_cert")
     except:
         SSL_CERT = None
 
 except Exception as e:
-    get_logger().error("No `username` or `password` found in section `pelastic` in ~/.config/pelastic\n"
+    get_logger().error("No `username` or `password` found in section `pelastic` in ~/.config/pelastic.ini\n"
                          "Please ensure you specify one prior to utilizing the API\n")
 
 if SHOW_WARNINGS:
