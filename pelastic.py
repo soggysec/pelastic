@@ -27,25 +27,45 @@ def main():
         parser.read(os.path.expanduser(conf_path))
 
         # Mandatory credentials
-        cloud_id = parser.get("elastic", "id")
-        elastic_username = parser.get("elastic", "username")
-        elastic_password = parser.get("elastic", "password")
+        is_local = parser.getboolean('elastic','local')
+        if is_local:
+            host = parser.get('elastic','host')
+            port = int(parser.get('elastic','port'))
+            es = Elasticsearch( [{'host': host, 'port': port}] )
+        else:
+            cloud_id = parser.get("elastic", "id")
+            elastic_username = parser.get("elastic", "username")
+            elastic_password = parser.get("elastic", "password")
 
-        es = Elasticsearch(
-            cloud_id=cloud_id,
-            http_auth=(elastic_username, elastic_password)
-        )
+            es = Elasticsearch(
+                cloud_id=cloud_id,
+                http_auth=(elastic_username, elastic_password)
+            )
 
     except Exception as e:
-        get_logger().error("No `id`, `username`, or `password` found in section `elastic` in " + conf_path + "\n"
-                           "Please ensure you specify one prior to running the program\n")
+        get_logger().error(e)
+
+    print("Successfully connected to Elastic Service")
 
     for workout in PelotonWorkout.list():
+        # Normalize some of the data
+        if hasattr(workout.metrics, "output_summary"):
+            output_summary = workout.metrics.output_summary.value
+        else:
+            output_summary = -1
+        if hasattr(workout.ride, "instructor"):
+            workout_name = workout.ride.instructor.name
+        else:
+            workout_name = ""
+
         doc = {
             'workout.id': workout.id,
             'workout.fitness_discipline': workout.fitness_discipline,
             'workout.status': workout.status,
-            'workout.ride.description': workout.ride.description,
+            'workout.ride.duration': workout.ride.duration,
+            'workout.ride.name': workout_name,
+            'workout.metrics.calories': workout.metrics.calories_summary.value,
+            'workout.metrics.total_output': output_summary,
             '@timestamp': str(workout.created_at.year) + "/" + str(workout.created_at.strftime("%m")) + "/" + str(workout.created_at.strftime("%d")) + " "
                           + str(workout.created_at.strftime("%H")) + ":" + str(workout.created_at.strftime("%M")) + ":" + str(workout.created_at.strftime("%S")),
             'workout.start_time': str(workout.start_time.year) + "/" + str(workout.start_time.strftime("%m")) + "/" + str(workout.start_time.strftime("%d")) + " "
