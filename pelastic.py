@@ -47,32 +47,75 @@ def main():
 
     print("Successfully connected to Elastic Service")
 
-    for workout in PelotonWorkout.list():
+    for workout in PelotonWorkout.list(limit=100):
         # Normalize some of the data
+        # Rides and Runs have Distance
+        distance_summary = -1
+        distance_unit = ""
+
+        # Rides have "Outputs"
+        output_summary = -1
+        output_unit = ""
+        avg_output = -1
+        avg_output_unit = ""
+
+        # If you have an HRM, you should have HRM stats
+        avg_hr = -1
+        avg_hr_unit = ""
+
+        if hasattr(workout.metrics, "distance_summary"):
+            distance_summary = workout.metrics.distance_summary.value
+            distance_unit = workout.metrics.distance_summary.unit
+
         if hasattr(workout.metrics, "output_summary"):
+            # This only exists in Rides
             output_summary = workout.metrics.output_summary.value
-        else:
-            output_summary = -1
+            output_unit = workout.metrics.output_summary.unit
+
+        if hasattr(workout.metrics, "output"):
+            avg_output = workout.metrics.output.average
+            avg_output_unit  = workout.metrics.output.unit
+
+        if hasattr(workout.metrics, "heart_rate"):
+            avg_hr        = workout.metrics.heart_rate.average
+            avg_hr_unit  = workout.metrics.heart_rate.unit
+
         if hasattr(workout.ride, "instructor"):
-            workout_name = workout.ride.instructor.name
+            instructor_name = workout.ride.instructor.name
         else:
-            workout_name = ""
+            instructor_name = ""
+
+        best_output = False
+        for achievement in workout.achievements:
+            if "best_output" == achievement.slug:
+                best_output = True
+                break
 
         doc = {
-            'workout.id': workout.id,
-            'workout.fitness_discipline': workout.fitness_discipline,
-            'workout.status': workout.status,
-            'workout.ride.duration': workout.ride.duration,
-            'workout.ride.name': workout_name,
-            'workout.metrics.calories': workout.metrics.calories_summary.value,
-            'workout.metrics.total_output': output_summary,
-            '@timestamp': str(workout.created_at.year) + "/" + str(workout.created_at.strftime("%m")) + "/" + str(workout.created_at.strftime("%d")) + " "
-                          + str(workout.created_at.strftime("%H")) + ":" + str(workout.created_at.strftime("%M")) + ":" + str(workout.created_at.strftime("%S")),
-            'workout.start_time': str(workout.start_time.year) + "/" + str(workout.start_time.strftime("%m")) + "/" + str(workout.start_time.strftime("%d")) + " "
-                          + str(workout.start_time.strftime("%H")) + ":" + str(workout.start_time.strftime("%M")) + ":" + str(workout.start_time.strftime("%S")),
-            'workout.end_time': str(workout.end_time.year) + "/" + str(workout.end_time.strftime("%m")) + "/" + str(workout.end_time.strftime("%d")) + " "
-                        + str(workout.end_time.strftime("%H")) + ":" + str(workout.end_time.strftime("%M")) + ":" + str(workout.end_time.strftime("%S"))
+            'id': workout.id,
+            'fitness_discipline': workout.fitness_discipline,
+            'instructor_name': instructor_name,
+            'total_output': output_summary,
+            'output_unit': output_unit,
+            'calories': workout.metrics.calories_summary.value,
+            'duration': workout.ride.duration,
+            'personal_record': best_output,
+
+            'distance_summary': distance_summary,
+            'distance_unit': distance_unit,
+
+            'avg_output': avg_output,
+            'avg_output_unit': avg_output_unit,
+
+            'avg_hr': avg_hr,
+            'avg_hr_unit': avg_hr_unit,
+
+            'status': workout.status,
+            '@timestamp': workout.created_at.strftime("%Y/%m/%d %H:%M:%S"),
+            'start_time': workout.start_time.strftime("%Y/%m/%d %H:%M:%S"),
+            'end_time': workout.end_time.strftime("%Y/%m/%d %H:%M:%S")
         }
+
         res = es.index(index="pelastic", id=workout.id, body=doc)
         print(res['result'])
 
