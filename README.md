@@ -57,3 +57,6 @@ python pelastic.py
 ```
 
 If everything worked as expected, you should be able to browse to your data using Kibana by going to: http://localhost:5601
+Once you've indexed all of your data into Elasticsearh, you should be able to import the Kibana Dashboards provided in the
+[pelastic_dashboards.ndjson](pelastic_dashboards.ndjson) by going to
+http://localhost:5601/app/kibana#/management/kibana/objects then click "Import"
