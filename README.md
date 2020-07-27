@@ -60,3 +60,9 @@ If everything worked as expected, you should be able to browse to your data usin
 Once you've indexed all of your data into Elasticsearh, you should be able to import the Kibana Dashboards provided in the
 [pelastic_dashboards.ndjson](pelastic_dashboards.ndjson) by going to
 http://localhost:5601/app/kibana#/management/kibana/objects then click "Import"
+
+Once complete, you should have something like this:
+
+![Dashboard1](dashboards/dashboard_1.png)
+![Dashboard2](dashboards/dashboard_2.png)
+![Dashboard3](dashboards/dashboard_3.png)
