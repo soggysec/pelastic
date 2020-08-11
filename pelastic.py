@@ -1,7 +1,7 @@
 import logging
 import os
 
-from peloton import PelotonWorkout
+from peloton import peloton, PelotonWorkout
 from elasticsearch import Elasticsearch
 
 def get_logger():
@@ -93,6 +93,7 @@ def main():
 
         doc = {
             'id': workout.id,
+            'username': peloton.PELOTON_USERNAME,
             'fitness_discipline': workout.fitness_discipline,
             'instructor_name': instructor_name,
             'total_output': output_summary,
