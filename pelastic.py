@@ -72,6 +72,11 @@ def main():
             output_summary = workout.metrics.output_summary.value
             output_unit = workout.metrics.output_summary.unit
 
+        if hasattr(workout.metrics, "calories_summary"):
+            calories = workout.metrics.calories_summary.value
+        else:
+            calories = -1
+
         if hasattr(workout.metrics, "output"):
             avg_output = workout.metrics.output.average
             avg_output_unit  = workout.metrics.output.unit
@@ -98,7 +103,7 @@ def main():
             'instructor_name': instructor_name,
             'total_output': output_summary,
             'output_unit': output_unit,
-            'calories': workout.metrics.calories_summary.value,
+            'calories': calories,
             'duration': workout.ride.duration,
             'personal_record': best_output,
 
