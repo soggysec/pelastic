@@ -1,6 +1,8 @@
 import logging
 import os
 
+import configparser
+import argparse
 from peloton import peloton, PelotonWorkout
 from elasticsearch import Elasticsearch
 
@@ -19,9 +21,15 @@ def get_logger():
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-F','--force-update', action='store_true',
+                        help="This will update all fields in every workout, even if it's already indexed")
+    args = parser.parse_args()
+
+    FORCE_UPDATE = args.force_update
+    INDEX_NAME = "pelastic"
 
     try:
-        import configparser
         parser = configparser.ConfigParser()
         conf_path = os.environ.get("PELASTIC_CONFIG", "~/.config/pelastic.ini")
         parser.read(os.path.expanduser(conf_path))
@@ -50,6 +58,14 @@ def main():
     for workout in PelotonWorkout.list(limit=100):
         # Normalize some of the data
         # Rides and Runs have Distance
+
+        # This will short-circuit if the id already exists
+        if not FORCE_UPDATE:
+            try:
+                res = es.get(index=INDEX_NAME, id=workout.id)
+                break
+            except:
+                pass
         distance_summary = -1
         distance_unit = ""
 
@@ -122,7 +138,7 @@ def main():
             'end_time': workout.end_time.strftime("%Y/%m/%d %H:%M:%S")
         }
 
-        res = es.index(index="pelastic", id=workout.id, body=doc)
+        res = es.index(index=INDEX_NAME, id=workout.id, body=doc)
         print(res['result'])
 
 if __name__ == "__main__":
